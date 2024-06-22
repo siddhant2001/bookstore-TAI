@@ -19,6 +19,8 @@ dependencies {
     implementation 'com.google.protobuf:protobuf-java:4.27.1'
     testImplementation platform('org.junit:junit-bom:5.10.0')
     testImplementation 'org.junit.jupiter:junit-jupiter'
+    testImplementation 'io.grpc:grpc-testing:1.64.0'
+    testImplementation 'io.grpc:grpc-inprocess:1.64.0'
 }
 
 test {
