@@ -63,4 +63,28 @@ public class BookServiceImplTest {
 
         assertEquals("Book Added: First Title", response.getMessage());
     }
+
+    @Test
+    public void testUpdateBook() throws Exception {
+        Book book = Book.newBuilder()
+                .setPageCount(123)
+                .setTitle("First Title")
+                .setIsbn("1")
+                .addAuthors("John Doe")
+                .build();
+
+        AddBookRequest request = AddBookRequest.newBuilder().setBook(book).build();
+         blockingStub.addBook(request);
+
+        Book updatedBook = Book.newBuilder()
+                .setIsbn("1")
+                .setTitle("Updated Test Book")
+                .addAuthors("Updated Test Author")
+                .setPageCount(456)
+                .build();
+        UpdateBookRequest updateRequest = UpdateBookRequest.newBuilder().setBook(updatedBook).build();
+
+        UpdateBookResponse response = blockingStub.updateBook(updateRequest);
+        assertEquals("Book Updated: Updated Test Book", response.getMessage());
+    }
 }
