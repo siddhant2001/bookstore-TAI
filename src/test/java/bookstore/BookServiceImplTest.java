@@ -74,7 +74,7 @@ public class BookServiceImplTest {
                 .build();
 
         AddBookRequest request = AddBookRequest.newBuilder().setBook(book).build();
-         blockingStub.addBook(request);
+        blockingStub.addBook(request);
 
         Book updatedBook = Book.newBuilder()
                 .setIsbn("1")

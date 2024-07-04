@@ -1,7 +1,10 @@
 package bookstore;
 
 import io.grpc.stub.StreamObserver;
+
+import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import bookstore.Bookstore.Book;
@@ -20,10 +23,17 @@ import bookstore.BookServiceGrpc.BookServiceImplBase;
 public class BookServiceImpl extends BookServiceImplBase {
     private final Map<String, Book> books = new HashMap<>();
 
+
+    private final DBHandler handler = new DBHandler();
+
     @Override
     public void addBook(AddBookRequest request, StreamObserver<AddBookResponse> responseObserver) {
         Book book = request.getBook();
         books.put(book.getIsbn(), book);
+
+        boolean success = handler.addBook(book);
+
+        System.out.println("addbook in dbhandler: " + success);
 
         AddBookResponse response = AddBookResponse.newBuilder().setMessage("Book Added: " + book.getTitle()).build();
         responseObserver.onNext(response);
@@ -62,9 +72,15 @@ public class BookServiceImpl extends BookServiceImplBase {
 
     @Override
     public void getBooks(GetBooksRequest request, StreamObserver<GetBooksResponse> responseObserver) {
-//        Integer count = request.getCount();
-        GetBooksResponse response = GetBooksResponse.newBuilder().addAllBooks(books.values()).build();
-        responseObserver.onNext(response);
-        responseObserver.onCompleted();
+
+        try{
+            List<Book> books = handler.getBooks();
+            GetBooksResponse response = GetBooksResponse.newBuilder().addAllBooks(books).build();
+            responseObserver.onNext(response);
+            responseObserver.onCompleted();
+        } catch (IOException e){
+            System.out.println("GetBooks "+e);
+        }
+
     }
 }

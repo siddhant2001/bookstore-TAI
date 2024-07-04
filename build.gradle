@@ -1,3 +1,5 @@
+import javax.lang.model.util.SimpleAnnotationValueVisitor6
+
 plugins {
     id 'java'
     id 'application'
@@ -9,18 +11,33 @@ version = '1.0-SNAPSHOT'
 
 repositories {
     mavenCentral()
+    mavenLocal()
+    maven {
+        url "${artifactory_contextUrl}/gradle"
+        credentials {
+            username = "${artifactory_user}"
+            password = "${artifactory_password}"
+        }
+    }
+
 }
 
 dependencies {
     implementation 'io.grpc:grpc-netty-shaded:1.64.0'
     implementation 'io.grpc:grpc-protobuf:1.64.0'
     implementation 'io.grpc:grpc-stub:1.64.0'
-    compileOnly 'org.apache.tomcat:annotations-api:6.0.53' // necessary for Java 9+
     implementation 'com.google.protobuf:protobuf-java:4.27.1'
+    implementation 'org.hypertrace.core.documentstore:document-store:0.7.61'
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.16.1'
+    implementation 'com.google.protobuf:protobuf-java-util:4.27.2'
+    compileOnly 'org.apache.tomcat:annotations-api:6.0.53' // necessary for Java 9+
+
     testImplementation platform('org.junit:junit-bom:5.10.0')
     testImplementation 'org.junit.jupiter:junit-jupiter'
     testImplementation 'io.grpc:grpc-testing:1.64.0'
     testImplementation 'io.grpc:grpc-inprocess:1.64.0'
+    testImplementation 'io.grpc:grpc-inprocess:1.64.0'
+    testImplementation group: 'org.mockito', name: 'mockito-core', version: '5.12.0'
 }
 
 test {
@@ -48,8 +65,7 @@ protobuf {
 sourceSets {
     main {
         java {
-            srcDirs 'src/main/java', 'build/generated/source/proto/main/java'
-            srcDirs 'src/main/java', 'build/generated/source/proto/main/grpc'
+            srcDirs 'src/main/java', 'build/generated/source/proto/main/java', 'build/generated/source/proto/main/grpc'
         }
     }
 }
